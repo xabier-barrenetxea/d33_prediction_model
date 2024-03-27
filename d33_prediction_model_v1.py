@@ -42,7 +42,6 @@ columns = ['STUDENT_AGE'
         , 'DAYS_SINCE_FIRST_SUB_PAYMENT'
         , 'N_DAYS_SINCE_LAST_CONFIRMED_LESSON'
         , 'NUM_CONFIRMED_LESSONS_DURING_SUB'
-        , 'SUBSCRIPTION_ACTIVE_DAY'
         , 'HOURS'
         , 'SUBJECT'
         , 'GMV_PROCEEDS_USD'
@@ -79,7 +78,6 @@ df_training_data_non_null_pd = df_training_data_pd[columns + [pred_columns]]
 numerical = ['STUDENT_AGE'
         , 'N_DAYS_SINCE_LAST_CONFIRMED_LESSON'
         , 'NUM_CONFIRMED_LESSONS_DURING_SUB'
-        , 'SUBSCRIPTION_ACTIVE_DAY'
         , 'HOURS'
         , 'GMV_PROCEEDS_USD'
         , 'AVG_LESSON_RATING'
@@ -120,7 +118,7 @@ df_training_data_non_null_pd[categorical] = df_training_data_non_null_pd[categor
 # COMMAND ----------
 
 # Correlation Plot
-corr = df_training_data_non_null_pd.corr()
+corr = df_training_data_non_null_pd[columns + [pred_columns]].corr()
 corr.style.background_gradient(cmap='coolwarm')
 
 # COMMAND ----------
@@ -287,7 +285,7 @@ one_hot_encoder = make_column_transformer(
 # Train logistic regression
 train_pipeline_21_logistic_regression = make_pipeline(
     one_hot_encoder 
-    ,  LogisticRegression(random_state=123,max_iter= 1500)
+    ,  LogisticRegression(random_state=123,max_iter= 2000)
 )
 train_pipeline_21_logistic_regression.fit(X_train_w_21,y_train_w_21)
 
@@ -321,6 +319,17 @@ print('Precision_score 14 days Grad Boost: ',precision_score(train_pipeline_14_g
 print('Precision_score 21 days Log Reg: ',precision_score(train_pipeline_21_logistic_regression.predict(X_test_21),y_test_21))
 print('Precision_score 21 days decision_tree: ',precision_score(train_pipeline_21_decision_tree.predict(X_test_21),y_test_21))
 print('Precision_score 21 days Grad Boost: ',precision_score(train_pipeline_21_gradient_boosting.predict(X_test_21),y_test_21))
+precision_values = ['precision_score'
+    ,precision_score(train_pipeline_7_logistic_regression.predict(X_test_7),y_test_7)
+    ,precision_score(train_pipeline_7_decision_tree.predict(X_test_7),y_test_7)
+    ,precision_score(train_pipeline_7_gradient_boosting.predict(X_test_7),y_test_7)
+    ,precision_score(train_pipeline_14_logistic_regression.predict(X_test_14),y_test_14)
+    ,precision_score(train_pipeline_14_decision_tree.predict(X_test_14),y_test_14)
+    ,precision_score(train_pipeline_14_gradient_boosting.predict(X_test_14),y_test_14)
+    ,precision_score(train_pipeline_21_logistic_regression.predict(X_test_21),y_test_21)
+    ,precision_score(train_pipeline_21_decision_tree.predict(X_test_21),y_test_21)
+    ,precision_score(train_pipeline_21_gradient_boosting.predict(X_test_21),y_test_21)
+]
 
 # COMMAND ----------
 
@@ -333,6 +342,17 @@ print('recall_score 14 days Grad Boost: ',recall_score(train_pipeline_14_gradien
 print('recall_score 21 days Log Reg: ',recall_score(train_pipeline_21_logistic_regression.predict(X_test_21),y_test_21))
 print('recall_score 21 days decision_tree: ',recall_score(train_pipeline_21_decision_tree.predict(X_test_21),y_test_21))
 print('recall_score 21 days Grad Boost: ',recall_score(train_pipeline_21_gradient_boosting.predict(X_test_21),y_test_21))
+recall_values = ['recall_score'
+    ,recall_score(train_pipeline_7_logistic_regression.predict(X_test_7),y_test_7)
+    ,recall_score(train_pipeline_7_decision_tree.predict(X_test_7),y_test_7)
+    ,recall_score(train_pipeline_7_gradient_boosting.predict(X_test_7),y_test_7)
+    ,recall_score(train_pipeline_14_logistic_regression.predict(X_test_14),y_test_14)
+    ,recall_score(train_pipeline_14_decision_tree.predict(X_test_14),y_test_14)
+    ,recall_score(train_pipeline_14_gradient_boosting.predict(X_test_14),y_test_14)
+    ,recall_score(train_pipeline_21_logistic_regression.predict(X_test_21),y_test_21)
+    ,recall_score(train_pipeline_21_decision_tree.predict(X_test_21),y_test_21)
+    ,recall_score(train_pipeline_21_gradient_boosting.predict(X_test_21),y_test_21)
+]
 
 # COMMAND ----------
 
@@ -345,20 +365,42 @@ print('roc_auc_score 14 days Grad Boost: ',roc_auc_score(train_pipeline_14_gradi
 print('roc_auc_score 21 days Log Reg: ',roc_auc_score(train_pipeline_21_logistic_regression.predict(X_test_21),y_test_21))
 print('roc_auc_score 21 days decision_tree: ',roc_auc_score(train_pipeline_21_decision_tree.predict(X_test_21),y_test_21))
 print('roc_auc_score 21 days Grad Boost: ',roc_auc_score(train_pipeline_21_gradient_boosting.predict(X_test_21),y_test_21))
+roc_auc_score_values = [ 'roc_auc_score'
+    ,roc_auc_score(train_pipeline_7_logistic_regression.predict(X_test_7),y_test_7)
+    ,roc_auc_score(train_pipeline_7_decision_tree.predict(X_test_7),y_test_7)
+    ,roc_auc_score(train_pipeline_7_gradient_boosting.predict(X_test_7),y_test_7)
+    ,roc_auc_score(train_pipeline_14_logistic_regression.predict(X_test_14),y_test_14)
+    ,roc_auc_score(train_pipeline_14_decision_tree.predict(X_test_14),y_test_14)
+    ,roc_auc_score(train_pipeline_14_gradient_boosting.predict(X_test_14),y_test_14)
+    ,roc_auc_score(train_pipeline_21_logistic_regression.predict(X_test_21),y_test_21)
+    ,roc_auc_score(train_pipeline_21_decision_tree.predict(X_test_21),y_test_21)
+    ,roc_auc_score(train_pipeline_21_gradient_boosting.predict(X_test_21),y_test_21)
+]
 
 # COMMAND ----------
 
 # tn, fp, fn, tp
 print('tn, fp, fn, tp')
-print('confusion_matrix 7 days Log Reg: ',confusion_matrix(train_pipeline_7_logistic_regression.predict(X_test),y_test))
-print('confusion_matrix 7 days decision_tree: ',confusion_matrix(train_pipeline_7_decision_tree.predict(X_test),y_test))
-print('confusion_matrix 7 days Grad Boost: ',confusion_matrix(train_pipeline_7_gradient_boosting.predict(X_test),y_test))
-print('confusion_matrix 14 days Log Reg: ',confusion_matrix(train_pipeline_14_logistic_regression.predict(X_test),y_test))
-print('confusion_matrix 14 days decision_tree: ',confusion_matrix(train_pipeline_14_decision_tree.predict(X_test),y_test))
-print('confusion_matrix 14 days Grad Boost: ',confusion_matrix(train_pipeline_14_gradient_boosting.predict(X_test),y_test))
-print('confusion_matrix 21 days Log Reg: ',confusion_matrix(train_pipeline_21_logistic_regression.predict(X_test),y_test))
-print('confusion_matrix 21 days decision_tree: ',confusion_matrix(train_pipeline_21_decision_tree.predict(X_test),y_test))
-print('confusion_matrix 21 days Grad Boost: ',confusion_matrix(train_pipeline_21_gradient_boosting.predict(X_test),y_test))
+print('confusion_matrix 7 days Log Reg: ',confusion_matrix(train_pipeline_7_logistic_regression.predict(X_test_7),y_test_7))
+print('confusion_matrix 7 days decision_tree: ',confusion_matrix(train_pipeline_7_decision_tree.predict(X_test_7),y_test_7))
+print('confusion_matrix 7 days Grad Boost: ',confusion_matrix(train_pipeline_7_gradient_boosting.predict(X_test_7),y_test_7))
+print('confusion_matrix 14 days Log Reg: ',confusion_matrix(train_pipeline_14_logistic_regression.predict(X_test_14),y_test_14))
+print('confusion_matrix 14 days decision_tree: ',confusion_matrix(train_pipeline_14_decision_tree.predict(X_test_14),y_test_14))
+print('confusion_matrix 14 days Grad Boost: ',confusion_matrix(train_pipeline_14_gradient_boosting.predict(X_test_14),y_test_14))
+print('confusion_matrix 21 days Log Reg: ',confusion_matrix(train_pipeline_21_logistic_regression.predict(X_test_21),y_test_21))
+print('confusion_matrix 21 days decision_tree: ',confusion_matrix(train_pipeline_21_decision_tree.predict(X_test_21),y_test_21))
+print('confusion_matrix 21 days Grad Boost: ',confusion_matrix(train_pipeline_21_gradient_boosting.predict(X_test_21),y_test_21))
+
+# COMMAND ----------
+
+columns = ['metric','linear_regression_7','decision_tree_7','gradient_boosting_7','linear_regression_14','decision_tree_14','gradient_boosting_14','linear_regression_21','decision_tree_21','gradient_boosting_21']
+values = [precision_values,recall_values,roc_auc_score_values]
+
+df_metrics = pd.DataFrame( columns = columns, data = values)
+
+# COMMAND ----------
+
+display(df_metrics)
 
 # COMMAND ----------
 
@@ -367,176 +409,170 @@ print('confusion_matrix 21 days Grad Boost: ',confusion_matrix(train_pipeline_21
 
 # COMMAND ----------
 
-y_test_pred = train_pipeline.predict(X_test)
+y_test_pred_prob_7_grad_boost_true = train_pipeline_7_gradient_boosting.predict_proba(X_test_7)[:,1]
+y_test_pred_prob_14_grad_boost_true = train_pipeline_14_gradient_boosting.predict_proba(X_test_14)[:,1]
+y_test_pred_prob_21_grad_boost_true = train_pipeline_21_gradient_boosting.predict_proba(X_test_21)[:,1]
 
 # COMMAND ----------
 
-y_test_pred_prob_7_grad_boost_true = train_pipeline_7_gradient_boosting.predict_proba(X_test)[:,1]
+df_y_pred_7 = pd.DataFrame()
+df_y_pred_14 = pd.DataFrame()
+df_y_pred_21 = pd.DataFrame()
+
+df_y_pred_7['y_test_pred_prob_7_grad_boost_true'] = y_test_pred_prob_7_grad_boost_true
+df_y_pred_14['y_test_pred_prob_14_grad_boost_true'] = y_test_pred_prob_14_grad_boost_true
+df_y_pred_21['y_test_pred_prob_21_grad_boost_true'] = y_test_pred_prob_21_grad_boost_true
+
+df_y_pred_7['y_test'] = y_test_7
+df_y_pred_14['y_test'] = y_test_14
+df_y_pred_21['y_test'] = y_test_21
+
+df_y_pred_7['90_thr_7'] = df_y_pred_7.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.9 else False, axis = 1)
+df_y_pred_7['85_thr_7'] = df_y_pred_7.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.85 else False, axis = 1)
+df_y_pred_7['80_thr_7'] = df_y_pred_7.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.8 else False, axis = 1)
+df_y_pred_7['75_thr_7'] = df_y_pred_7.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.75 else False, axis = 1)
+df_y_pred_7['70_thr_7'] = df_y_pred_7.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.7 else False, axis = 1)
+df_y_pred_7['60_thr_7'] = df_y_pred_7.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.6 else False, axis = 1)
+
+df_y_pred_14['90_thr_14'] = df_y_pred_14.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.9 else False, axis = 1)
+df_y_pred_14['85_thr_14'] = df_y_pred_14.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.85 else False, axis = 1)
+df_y_pred_14['80_thr_14'] = df_y_pred_14.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.8 else False, axis = 1)
+df_y_pred_14['75_thr_14'] = df_y_pred_14.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.75 else False, axis = 1)
+df_y_pred_14['70_thr_14'] = df_y_pred_14.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.7 else False, axis = 1)
+df_y_pred_14['60_thr_14'] = df_y_pred_14.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.6 else False, axis = 1)
+
+df_y_pred_21['90_thr_21'] = df_y_pred_21.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.9 else False, axis = 1)
+df_y_pred_21['85_thr_21'] = df_y_pred_21.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.85 else False, axis = 1)
+df_y_pred_21['80_thr_21'] = df_y_pred_21.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.8 else False, axis = 1)
+df_y_pred_21['75_thr_21'] = df_y_pred_21.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.75 else False, axis = 1)
+df_y_pred_21['70_thr_21'] = df_y_pred_21.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.7 else False, axis = 1)
+df_y_pred_21['60_thr_21'] = df_y_pred_21.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.6 else False, axis = 1)
 
 # COMMAND ----------
 
-df_y_pred = pd.DataFrame()
+print('Recall at 90% thr 7 days: ', recall_score(y_test_7, df_y_pred_7['90_thr_7']))
+print('Recall at 85% thr 7 days: ', recall_score(y_test_7, df_y_pred_7['85_thr_7']))
+print('Recall at 80% thr 7 days: ', recall_score(y_test_7, df_y_pred_7['80_thr_7']))
+print('Recall at 75% thr 7 days: ', recall_score(y_test_7, df_y_pred_7['75_thr_7']))
+print('Recall at 70% thr 7 days: ', recall_score(y_test_7, df_y_pred_7['70_thr_7']))
+print('Recall at 60% thr 7 days: ', recall_score(y_test_7, df_y_pred_7['60_thr_7']))
 
+print('Recall at 90% thr 14 days: ', recall_score(y_test_14, df_y_pred_14['90_thr_14']))
+print('Recall at 85% thr 14 days: ', recall_score(y_test_14, df_y_pred_14['85_thr_14']))
+print('Recall at 80% thr 14 days: ', recall_score(y_test_14, df_y_pred_14['80_thr_14']))
+print('Recall at 75% thr 14 days: ', recall_score(y_test_14, df_y_pred_14['75_thr_14']))
+print('Recall at 70% thr 14 days: ', recall_score(y_test_14, df_y_pred_14['70_thr_14']))
+print('Recall at 60% thr 14 days: ', recall_score(y_test_14, df_y_pred_14['60_thr_14']))
 
-df_y_pred['y_test_pred_prob_7_grad_boost_true'] = y_test_pred_prob_7_grad_boost_true
-df_y_pred['y_test_pred_prob_14_grad_boost_true'] = y_test_pred_prob_7_grad_boost_true
-df_y_pred['y_test_pred_prob_21_grad_boost_true'] = y_test_pred_prob_7_grad_boost_true
+print('Recall at 90% thr 21 days: ', recall_score(y_test_21, df_y_pred_21['90_thr_21']))
+print('Recall at 85% thr 21 days: ', recall_score(y_test_21, df_y_pred_21['85_thr_21']))
+print('Recall at 80% thr 21 days: ', recall_score(y_test_21, df_y_pred_21['80_thr_21']))
+print('Recall at 75% thr 21 days: ', recall_score(y_test_21, df_y_pred_21['75_thr_21']))
+print('Recall at 70% thr 21 days: ', recall_score(y_test_21, df_y_pred_21['70_thr_21']))
+print('Recall at 60% thr 21 days: ', recall_score(y_test_21, df_y_pred_21['60_thr_21']))
 
-df_y_pred['y_test'] = y_test
-
-df_y_pred['90_thr_7'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.9 else False, axis = 1)
-df_y_pred['85_thr_7'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.85 else False, axis = 1)
-df_y_pred['80_thr_7'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.8 else False, axis = 1)
-df_y_pred['75_thr_7'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.75 else False, axis = 1)
-df_y_pred['70_thr_7'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.7 else False, axis = 1)
-df_y_pred['60_thr_7'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_7_grad_boost_true'] >=0.6 else False, axis = 1)
-
-df_y_pred['90_thr_14'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.9 else False, axis = 1)
-df_y_pred['85_thr_14'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.85 else False, axis = 1)
-df_y_pred['80_thr_14'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.8 else False, axis = 1)
-df_y_pred['75_thr_14'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.75 else False, axis = 1)
-df_y_pred['70_thr_14'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.7 else False, axis = 1)
-df_y_pred['60_thr_14'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_14_grad_boost_true'] >=0.6 else False, axis = 1)
-
-df_y_pred['90_thr_21'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.9 else False, axis = 1)
-df_y_pred['85_thr_21'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.85 else False, axis = 1)
-df_y_pred['80_thr_21'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.8 else False, axis = 1)
-df_y_pred['75_thr_21'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.75 else False, axis = 1)
-df_y_pred['70_thr_21'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.7 else False, axis = 1)
-df_y_pred['60_thr_21'] = df_y_pred.apply(lambda x: True if x['y_test_pred_prob_21_grad_boost_true'] >=0.6 else False, axis = 1)
-
-# COMMAND ----------
-
-print('Recall at 90% thr 7 days: ', recall_score(y_test, df_y_pred['90_thr_7']))
-print('Recall at 85% thr 7 days: ', recall_score(y_test, df_y_pred['85_thr_7']))
-print('Recall at 80% thr 7 days: ', recall_score(y_test, df_y_pred['80_thr_7']))
-print('Recall at 75% thr 7 days: ', recall_score(y_test, df_y_pred['75_thr_7']))
-print('Recall at 70% thr 7 days: ', recall_score(y_test, df_y_pred['70_thr_7']))
-print('Recall at 60% thr 7 days: ', recall_score(y_test, df_y_pred['60_thr_7']))
-
-print('Recall at 90% thr 14 days: ', recall_score(y_test, df_y_pred['90_thr_14']))
-print('Recall at 85% thr 14 days: ', recall_score(y_test, df_y_pred['85_thr_14']))
-print('Recall at 80% thr 14 days: ', recall_score(y_test, df_y_pred['80_thr_14']))
-print('Recall at 75% thr 14 days: ', recall_score(y_test, df_y_pred['75_thr_14']))
-print('Recall at 70% thr 14 days: ', recall_score(y_test, df_y_pred['70_thr_14']))
-print('Recall at 60% thr 14 days: ', recall_score(y_test, df_y_pred['60_thr_14']))
-
-print('Recall at 90% thr 21 days: ', recall_score(y_test, df_y_pred['90_thr_21']))
-print('Recall at 85% thr 21 days: ', recall_score(y_test, df_y_pred['85_thr_21']))
-print('Recall at 80% thr 21 days: ', recall_score(y_test, df_y_pred['80_thr_21']))
-print('Recall at 75% thr 21 days: ', recall_score(y_test, df_y_pred['75_thr_21']))
-print('Recall at 70% thr 21 days: ', recall_score(y_test, df_y_pred['70_thr_21']))
-print('Recall at 60% thr 21 days: ', recall_score(y_test, df_y_pred['60_thr_21']))
+recall_different_thr = ['Recall'
+, recall_score(y_test_7, df_y_pred_7['90_thr_7'])
+, recall_score(y_test_7, df_y_pred_7['85_thr_7'])
+, recall_score(y_test_7, df_y_pred_7['80_thr_7'])
+, recall_score(y_test_7, df_y_pred_7['75_thr_7'])
+, recall_score(y_test_7, df_y_pred_7['70_thr_7'])
+, recall_score(y_test_7, df_y_pred_7['60_thr_7'])
+, recall_score(y_test_14, df_y_pred_14['90_thr_14'])
+, recall_score(y_test_14, df_y_pred_14['85_thr_14'])
+, recall_score(y_test_14, df_y_pred_14['80_thr_14'])
+, recall_score(y_test_14, df_y_pred_14['75_thr_14'])
+, recall_score(y_test_14, df_y_pred_14['70_thr_14'])
+, recall_score(y_test_14, df_y_pred_14['60_thr_14'])
+, recall_score(y_test_21, df_y_pred_21['90_thr_21'])
+, recall_score(y_test_21, df_y_pred_21['85_thr_21'])
+, recall_score(y_test_21, df_y_pred_21['80_thr_21'])
+, recall_score(y_test_21, df_y_pred_21['75_thr_21'])
+, recall_score(y_test_21, df_y_pred_21['70_thr_21'])
+, recall_score(y_test_21, df_y_pred_21['60_thr_21'])
+]
 
 # COMMAND ----------
 
-print('Precision at 90% thr: ', precision_score(y_test, df_y_pred['90_thr']))
-print('Precision at 85% thr: ', precision_score(y_test, df_y_pred['85_thr']))
-print('Precision at 80% thr: ', precision_score(y_test, df_y_pred['80_thr']))
-print('Precision at 75% thr: ', precision_score(y_test, df_y_pred['75_thr']))
-print('Precision at 70% thr: ', precision_score(y_test, df_y_pred['70_thr']))
-print('Precision at 60% thr: ', precision_score(y_test, df_y_pred['60_thr']))
+print('Precision at 90% thr: ', precision_score(y_test_7, df_y_pred_7['90_thr_7']))
+print('Precision at 85% thr: ', precision_score(y_test_7, df_y_pred_7['85_thr_7']))
+print('Precision at 80% thr: ', precision_score(y_test_7, df_y_pred_7['80_thr_7']))
+print('Precision at 75% thr: ', precision_score(y_test_7, df_y_pred_7['75_thr_7']))
+print('Precision at 70% thr: ', precision_score(y_test_7, df_y_pred_7['70_thr_7']))
+print('Precision at 60% thr: ', precision_score(y_test_7, df_y_pred_7['60_thr_7']))
 
-print('Precision at 90% thr 14 days: ', precision_score(y_test, df_y_pred['90_thr_14']))
-print('Precision at 85% thr 14 days: ', precision_score(y_test, df_y_pred['85_thr_14']))
-print('Precision at 80% thr 14 days: ', precision_score(y_test, df_y_pred['80_thr_14']))
-print('Precision at 75% thr 14 days: ', precision_score(y_test, df_y_pred['75_thr_14']))
-print('Precision at 70% thr 14 days: ', precision_score(y_test, df_y_pred['70_thr_14']))
-print('Precision at 60% thr 14 days: ', precision_score(y_test, df_y_pred['60_thr_14']))
+print('Precision at 90% thr 14 days: ', precision_score(y_test_14, df_y_pred_14['90_thr_14']))
+print('Precision at 85% thr 14 days: ', precision_score(y_test_14, df_y_pred_14['85_thr_14']))
+print('Precision at 80% thr 14 days: ', precision_score(y_test_14, df_y_pred_14['80_thr_14']))
+print('Precision at 75% thr 14 days: ', precision_score(y_test_14, df_y_pred_14['75_thr_14']))
+print('Precision at 70% thr 14 days: ', precision_score(y_test_14, df_y_pred_14['70_thr_14']))
+print('Precision at 60% thr 14 days: ', precision_score(y_test_14, df_y_pred_14['60_thr_14']))
 
-print('Precision at 90% thr 21 days: ', precision_score(y_test, df_y_pred['90_thr_21']))
-print('Precision at 85% thr 21 days: ', precision_score(y_test, df_y_pred['85_thr_21']))
-print('Precision at 80% thr 21 days: ', precision_score(y_test, df_y_pred['80_thr_21']))
-print('Precision at 75% thr 21 days: ', precision_score(y_test, df_y_pred['75_thr_21']))
-print('Precision at 70% thr 21 days: ', precision_score(y_test, df_y_pred['70_thr_21']))
-print('Precision at 60% thr 21 days: ', precision_score(y_test, df_y_pred['60_thr_21']))
+print('Precision at 90% thr 21 days: ', precision_score(y_test_21, df_y_pred_21['90_thr_21']))
+print('Precision at 85% thr 21 days: ', precision_score(y_test_21, df_y_pred_21['85_thr_21']))
+print('Precision at 80% thr 21 days: ', precision_score(y_test_21, df_y_pred_21['80_thr_21']))
+print('Precision at 75% thr 21 days: ', precision_score(y_test_21, df_y_pred_21['75_thr_21']))
+print('Precision at 70% thr 21 days: ', precision_score(y_test_21, df_y_pred_21['70_thr_21']))
+print('Precision at 60% thr 21 days: ', precision_score(y_test_21, df_y_pred_21['60_thr_21']))
 
-# COMMAND ----------
-
-print('roc_auc_score at 90% thr: ', roc_auc_score(y_test, df_y_pred['90_thr']))
-print('roc_auc_score at 85% thr: ', roc_auc_score(y_test, df_y_pred['85_thr']))
-print('roc_auc_score at 80% thr: ', roc_auc_score(y_test, df_y_pred['80_thr']))
-print('roc_auc_score at 75% thr: ', roc_auc_score(y_test, df_y_pred['75_thr']))
-print('roc_auc_score at 70% thr: ', roc_auc_score(y_test, df_y_pred['70_thr']))
-print('roc_auc_score at 60% thr: ', roc_auc_score(y_test, df_y_pred['60_thr']))
-
-print('roc_auc_score at 90% thr 14 days: ', roc_auc_score(y_test, df_y_pred['90_thr_14']))
-print('roc_auc_score at 85% thr 14 days: ', roc_auc_score(y_test, df_y_pred['85_thr_14']))
-print('roc_auc_score at 80% thr 14 days: ', roc_auc_score(y_test, df_y_pred['80_thr_14']))
-print('roc_auc_score at 75% thr 14 days: ', roc_auc_score(y_test, df_y_pred['75_thr_14']))
-print('roc_auc_score at 70% thr 14 days: ', roc_auc_score(y_test, df_y_pred['70_thr_14']))
-print('roc_auc_score at 60% thr 14 days: ', roc_auc_score(y_test, df_y_pred['60_thr_14']))
-
-print('roc_auc_score at 90% thr 21 days: ', roc_auc_score(y_test, df_y_pred['90_thr_21']))
-print('roc_auc_score at 85% thr 21 days: ', roc_auc_score(y_test, df_y_pred['85_thr_21']))
-print('roc_auc_score at 80% thr 21 days: ', roc_auc_score(y_test, df_y_pred['80_thr_21']))
-print('roc_auc_score at 75% thr 21 days: ', roc_auc_score(y_test, df_y_pred['75_thr_21']))
-print('roc_auc_score at 70% thr 21 days: ', roc_auc_score(y_test, df_y_pred['70_thr_21']))
-print('roc_auc_score at 60% thr 21 days: ', roc_auc_score(y_test, df_y_pred['60_thr_21']))
+precision_different_thr = [ 'Precision'
+, precision_score(y_test_7, df_y_pred_7['90_thr_7'])
+, precision_score(y_test_7, df_y_pred_7['85_thr_7'])
+, precision_score(y_test_7, df_y_pred_7['80_thr_7'])
+, precision_score(y_test_7, df_y_pred_7['75_thr_7'])
+, precision_score(y_test_7, df_y_pred_7['70_thr_7'])
+, precision_score(y_test_7, df_y_pred_7['60_thr_7'])
+, precision_score(y_test_14, df_y_pred_14['90_thr_14'])
+, precision_score(y_test_14, df_y_pred_14['85_thr_14'])
+, precision_score(y_test_14, df_y_pred_14['80_thr_14'])
+, precision_score(y_test_14, df_y_pred_14['75_thr_14'])
+, precision_score(y_test_14, df_y_pred_14['70_thr_14'])
+, precision_score(y_test_14, df_y_pred_14['60_thr_14'])
+, precision_score(y_test_21, df_y_pred_21['90_thr_21'])
+, precision_score(y_test_21, df_y_pred_21['85_thr_21'])
+, precision_score(y_test_21, df_y_pred_21['80_thr_21'])
+, precision_score(y_test_21, df_y_pred_21['75_thr_21'])
+, precision_score(y_test_21, df_y_pred_21['70_thr_21'])
+, precision_score(y_test_21, df_y_pred_21['60_thr_21'])
+]
 
 # COMMAND ----------
 
-from sklearn.metrics import accuracy_score, precision_score, f1_score, roc_auc_score, recall_score
+columns = ['metric','90_thr_7','85_thr_7','80_thr_7','75_thr_7','70_thr_7','60_thr_7','90_thr_14','85_thr_14','80_thr_14','75_thr_14','70_thr_14','60_thr_14','90_thr_21','85_thr_21','80_thr_21','75_thr_21','70_thr_21','60_thr_21']
+df_thr_metrics = pd.DataFrame(columns = columns, data = [recall_different_thr,precision_different_thr])
 
 # COMMAND ----------
 
-import pandas as pd
+display(df_thr_metrics)
 
 # COMMAND ----------
 
-
-feature_importance = pd.DataFrame()
-feature_importance['feature_name'] = train_pipeline.steps[0][1].get_feature_names()
-feature_importance['feature_importances'] = train_pipeline.steps[1][1].feature_importances_
-
-# COMMAND ----------
-
-display(feature_importance.sort_values(by = 'feature_importances',ascending = False))
-
-# COMMAND ----------
-
-sum(y_test_pred)
-
-# COMMAND ----------
-
-sum(y_test)
-
-# COMMAND ----------
-
-len(y_test)
-
-# COMMAND ----------
-
-accuracy_score(y_test,y_test_pred)
-
-# COMMAND ----------
-
-precision_score(y_test,y_test_pred)
-
-# COMMAND ----------
-
-recall_score(y_test,y_test_pred)
-
-# COMMAND ----------
-
-roc_auc_score(y_test,y_test_pred)
-
-# COMMAND ----------
-
-len(y_test)
+# MAGIC %md
+# MAGIC # 6. Feature Importance
 
 # COMMAND ----------
 
 
+feature_importance_7 = pd.DataFrame()
+feature_importance_7['feature_name'] = train_pipeline_7_gradient_boosting.steps[0][1].get_feature_names()
+feature_importance_7['feature_importances'] = train_pipeline_7_gradient_boosting.steps[1][1].feature_importances_
+
+feature_importance_14 = pd.DataFrame()
+feature_importance_14['feature_name'] = train_pipeline_14_gradient_boosting.steps[0][1].get_feature_names()
+feature_importance_14['feature_importances'] = train_pipeline_14_gradient_boosting.steps[1][1].feature_importances_
+
+feature_importance_21 = pd.DataFrame()
+feature_importance_21['feature_name'] = train_pipeline_21_gradient_boosting.steps[0][1].get_feature_names()
+feature_importance_21['feature_importances'] = train_pipeline_21_gradient_boosting.steps[1][1].feature_importances_
 
 # COMMAND ----------
 
-len(y_test_pred)
+display(feature_importance_7.sort_values(by = 'feature_importances',ascending = False))
 
 # COMMAND ----------
 
-f1_score(y_test,y_test_pred)
+display(feature_importance_14.sort_values(by = 'feature_importances',ascending = False))
 
 # COMMAND ----------
 
-
+display(feature_importance_21.sort_values(by = 'feature_importances',ascending = False))
